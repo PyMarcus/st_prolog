@@ -59,5 +59,42 @@ O a(x) chama-se conclusao.
 
 prole(X, Y) :- genitor(Y, X).
 
+
+% QUESTÕES:
+/*
+ * Dado a base de fatos, base de conhecimento, 
+ * quem sao os alunos do professor X e quais pessoas
+ * estão associadas a universidade X(aluno,professor)
+ * */
+
+aluno(joao, calculo).%joao é aluno de calculo
+aluno(maria, calculo).
+aluno(joel, programacao).
+aluno(joel, estrutura).
+frequenta(joao,puc).
+frequenta(maria, puc).
+frequenta(joel, ufrj).
+professor(carlos, calculo).
+professor(ana_paula, estrutura).
+professor(pedro, programacao).
+funcionario(pedro, ufrj).
+funcionario(ana_paula, puc).
+funcionario(carlos, puc).
+
+% alunos do professor X = doprofessor(_,FULANO).
+
+doprofessor(Aluno, NomeProfessor)
+:- professor(NomeProfessor,Materia), 
+    aluno(Aluno,Materia).
+
+associados(Pessoa,Universidade):-
+    funcionario(Pessoa,Universidade);
+    frequenta(Pessoa,Universidade).
+        
+
+
+
+
+
 mae(X, Y) :- genitor(X, Y) , mulher(X).
 
