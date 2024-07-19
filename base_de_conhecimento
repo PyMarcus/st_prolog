@@ -1,0 +1,27 @@
+/*
+ * Em prolog, os predicatos são estáticos
+ * mas, podem ser dinamicos ao usar a diretiva
+ * 
+ * :- dynamic NomeDoPredicato/Aridade
+ * 
+ * listar determinado fato:
+ * listing(homem). -> lista todos os homens.
+ * */
+
+:-dynamic mulher/1.
+
+mulher(ana).
+mulher(maria).
+mulher(camila).
+homem(joao).
+homem(jose).
+
+% INSERIR fato/regra no último item do predicato.
+%assert(mulher(ester)).
+
+% INSERIR fato/regra no primeiro item do predicato.
+%asserta(mulher(eliza)).
+
+% Remover primeira clausula
+%retract(mulher)
+%retractall(mulher(_)).
