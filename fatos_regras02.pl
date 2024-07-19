@@ -58,6 +58,7 @@ O a(x) chama-se conclusao.
 */
 
 prole(X, Y) :- genitor(Y, X).
+mae(X, Y) :- genitor(X, Y) , mulher(X).
 
 
 % QUESTÕES:
@@ -92,9 +93,11 @@ associados(Pessoa,Universidade):-
     frequenta(Pessoa,Universidade).
         
 
+% Programa q forneça o nome de qlqr estado do sudeste.
 
+capital(mg) :- write('belo horizonte').
+capital(sp) :- write('são paulo').
+capital(rj) :- write('rio de janeiro').
 
-
-
-mae(X, Y) :- genitor(X, Y) , mulher(X).
+estados(mg, 'BH').
 
