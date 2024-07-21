@@ -1,0 +1,89 @@
+
+usuario(carlos).
+usuario(joana).
+usuario(felisberto).
+usuario(laura).
+usuario(julio).
+usuario(igor).
+usuario(wilson).
+usuario(marta).
+usuario(agnes).
+
+produto(iphone).
+produto(motox).
+produto(livro_harry_potter).
+produto(camisa_star_wars).
+produto(playstation).
+produto(xbox).
+produto(windows_phone).
+produto(ipad).
+produto(imac).
+
+amigo(carlos, joana).
+amigo(laura, carlos).
+amigo(laura, marta).
+amigo(julio, igor).
+amigo(julio, wilson).
+amigo(marta, felisberto).
+amigo(felisberto, carlos).
+amigo(felisberto, agnes).
+amigo(X, Y) :- amigo(Y, X).
+
+comprou(carlos, motox).
+comprou(felisberto, xbox).
+comprou(laura, iphone).
+comprou(agnes, playstation).
+comprou(igor, ipad).
+comprou(marta, ipad).
+
+curtiu(carlos, ipad).
+curtiu(agnes, wilson).
+curtiu(laura, xbox).
+curtiu(laura, playstation).
+curtiu(laura, ipad).
+
+
+
+%talvez_voce_conheca(X, Y): X e Y devem ser pessoas. X talvez conheça Y se Y for amigo de
+%um amigo de X, ou seja, X e Y não tem uma amizade mas tem um amigo em comum.
+talvez_voce_conheca(X,Y) :- usuario(X),usuario(Y),X \= Y, 
+    \+ amigo(X, Y),amigo(Y, Z),amigo(Z, X).
+
+%recomendamos(X, Y): um produto X é recomendado para um usuário Y, se um amigo de Y
+%comprou o produto X ou se Y curtiu o produto X.
+amigos(X, Y) :- amigo(X, Y); amigo(Y, X).
+
+recomendamos(Produto, Usuario) :- 
+    produto(Produto), usuario(Usuario), 
+    (amigos(Usuario, Amigo), comprou(Amigo, Produto));
+    curtiu(Usuario, Produto).
+%super_recomendamos(X, Y): um produto X é recomendado para um usuário Y, se pelo menos
+%dois amigos de Y compraram o produto X e se Y curtiu o produto X.
+talvez_voce_conheca_tmb(Z, Y, X) :- amigo(Z, P),amigo(P, Y),comprou(P,X).
+
+super_recomendamos(X,Y) :- usuario(Y),produto(X),
+    					curtiu(Y,X),
+    					amigo(Y, Z), comprou(Z, X),
+    					talvez_voce_conheca_tmb(Z, Y, X).
+/*
+ * grau_conexao(X, Y, G): X e Y são usuários. G será 1 se X e Y forem amigos, 2 se X e Y
+	tiverem um amigo em comum, 3 se compraram o mesmo produto, 4 se curtiram o
+	mesmo produto e 5 se nenhuma das opções anteriores ocorrerem.
+ * 
+ * */
+grau_conexao(X, Y, G) :-
+    usuario(X), usuario(Y),
+    (   amigo(X, Y) ->
+        G = 1
+    ;   talvez_voce_conheca(X, Y) ->
+        G = 2
+    ;   (comprou(X, P), comprou(Y, P)) ->
+        G = 3
+    ;   (curtiu(X, P), curtiu(Y, P)) ->
+        G = 4
+    ;   G = 5
+    ).							
+
+
+
+
