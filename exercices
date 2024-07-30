@@ -87,3 +87,133 @@ grau_conexao(X, Y, G) :-
 
 
 
+% base de conhecimento de um sistema de recomendacao de compras
+
+
+% usuarios
+usuario(carlos).
+usuario(joana).
+usuario(felisberto).
+usuario(laura).
+usuario(julio).
+usuario(igor).
+usuario(wilson).
+usuario(marta).
+usuario(agnes).
+
+% produtos
+produto(iphone).
+produto(motox).
+produto(livro_harry_potter).
+produto(camisa_star_wars).
+produto(playstation).
+produto(xbox).
+produto(windows_phone).
+produto(ipad).
+produto(imac).
+
+% amigos
+amigo(carlos, joana).
+amigo(laura, carlos).
+amigo(laura, igor).
+amigo(laura, marta).
+amigo(julio, igor).
+amigo(julio, wilson).
+amigo(marta, felisberto).
+amigo(felisberto, carlos).
+amigo(felisberto, agnes).
+amigo(X, Y) :- amigo(Y, X).
+amigos(X, Y) :- amigo(Y, X);amigo(X,Y).
+
+
+% compras
+comprou(carlos, motox).
+comprou(felisberto, xbox).
+comprou(laura, iphone).
+comprou(laura, xbox).
+
+comprou(agnes, playstation).
+comprou(igor, ipad).
+comprou(marta, ipad).
+
+% curtidas
+curtiu(carlos, ipad).
+curtiu(agnes, wilson).
+curtiu(laura, xbox).
+curtiu(laura, playstation).
+
+
+
+% pede para inserir o nome e o exibe na linha seguinte - funciona apenas no pc.
+whats_your_name() :- write("Qual o seu nome: "),read(X),nl,
+    				 write(X),nl.
+
+nao_amigo(X, Y) :- \+ amigo(X, Y),!.
+% questao1
+talvez_voce_conheca(X, Y) :- usuario(X), usuario(Y),nao_amigo(X,Y),
+    						amigo(X,Z),amigo(Y,Z),!.
+
+
+recomendamos(X, Y) :- (  curtiu(Y, X),! );(amigos(Y, Z), comprou(Z, X)).
+
+
+/*grau_conexao(X, Y, G): X e Y são usuários. G será 1 se X e Y forem amigos, 2 se X e Y
+
+tiverem um amigo em comum, 3 se compraram o mesmo produto, 4 se curtiram o mesmo pro-
+duto e 5 se nenhuma das opções anteriores ocorrerem.
+ * 
+ * */
+
+
+% Verificando se são amigos diretos e atribuindo grau de conexão 1
+sao_amigos(G, X, Y) :- amigos(X, Y), G is 1.
+
+% Verificando se se conhecem indiretamente e atribuindo grau de conexão 2
+se_conhecem(G, X, Y) :- talvez_voce_conheca(X, Y), G is 2.
+
+% Determinando o grau de conexão geral
+grau_conexao(X, Y, G) :- sao_amigos(G, X, Y).
+grau_conexao(X, Y, G) :- se_conhecem(G, X, Y).
+
+
+
+nao_recomendamos(X, P) :- usuario(X), produto(P), amigo(X, Z), comprou(Z, P), \+ curtiu(Z,P).
+tamanho([], 0).
+
+% Caso recursivo: O tamanho de uma lista não vazia é 1 + o tamanho do resto da lista.
+seus_amigos(_, []).
+seus_amigos(X, [H|T]) :- amigo(X, H) ,seus_amigos(X, T).
+
+conexoes(_, []).
+conexoes(X, [H|T]) :- ( amigos(X, H);talvez_voce_conheca(X, H)),conexoes(X, T).
+
+
+compraram(X,Y,P) :- comprou(X, P), comprou(Y,P).
+
+interesses(X, L) :- comprou(X, L);curtiu(X,L).
+
+len2([],0).
+len2([_|T],N) :- N = 1 + N1, len2(T, N1).
+numero_compras(_, [], 0). 
+numero_compras(X, [H|T], Q) :-
+    (comprou(X, H) -> Q1 is 1; Q1 is 0),  % Verifica se X comprou H, atribui 1 se verdadeiro, 0 se falso
+    numero_compras(X, T, Q2),  % Conta itens na cauda da lista
+    Q is Q1 + Q2.  % Soma a contagem do item atual com a contagem dos itens restantes
+
+qnt(_,_,0).
+qnt(Z,X,P) :- ( comprou(Z,X),qnt(Z,X,P2),P is P1 + P2.
+
+super_recomendamos(X, Y) :- amigo(Z,Y),qnt(Z,X,P),P > 1.
+
+
+
+
+
+
+
+
+
+
+
+
+
